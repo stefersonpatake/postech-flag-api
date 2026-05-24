@@ -139,5 +139,26 @@ def update_flag(name):
     
     return jsonify({"message": f"Flag '{name}' atualizada"}), 200
 
+@app.route('/flags/<string:name>', methods=['DELETE'])
+def delete_flag(name):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM flags WHERE name = %s", (name,))
+        
+        if cur.rowcount == 0:
+            return jsonify({"error": "Flag não encontrada"}), 404
+            
+        conn.commit()
+    except Exception as e:
+        return jsonify({"error": "Erro interno no servidor ao excluir a flag", "details": str(e)}), 500
+    finally:
+        if 'cur' in locals() and not cur.closed:
+            cur.close()
+        if 'conn' in locals() and not conn.closed:
+            conn.close()
+    
+    return jsonify({"message": f"Flag '{name}' excluída"}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
