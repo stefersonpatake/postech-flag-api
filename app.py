@@ -3,8 +3,18 @@ import click
 from flask import Flask, request, jsonify
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
+
+REQUIRED_VARS = ["DB_HOST", "DB_NAME", "DB_USER", "DB_PASSWORD"]
+missing = [v for v in REQUIRED_VARS if not os.getenv(v)]
+if missing:
+    raise RuntimeError(
+        f"Variáveis de ambiente faltando no .env: {', '.join(missing)}"
+    )
 
 DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
