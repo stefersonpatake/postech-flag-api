@@ -7,9 +7,10 @@ User=ec2-user
 # Ajuste para o diretorio real onde estao app.py / requirements.txt na EC2
 WorkingDirectory=/home/ec2-user/postech-flag-api
 Environment=APP_ENV=PROD
-# Use o caminho absoluto do gunicorn (confirme com: which gunicorn).
-# Se instalou via pip --user, costuma ser /home/ec2-user/.local/bin/gunicorn
-ExecStart=gunicorn --bind 0.0.0.0:5000 app:app
+# Garante as dependencias atualizadas a cada (re)start (idempotente).
+ExecStartPre=/home/ec2-user/postech-flag-api/venv/bin/pip install -r requirements.txt
+# Aponta direto para o gunicorn da venv (equivale a "ativar" a venv).
+ExecStart=/home/ec2-user/postech-flag-api/venv/bin/gunicorn --bind 0.0.0.0:5000 app:app
 Restart=always
 
 [Install]
