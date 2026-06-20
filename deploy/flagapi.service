@@ -1,0 +1,16 @@
+[Unit]
+Description=FlagAPI (gunicorn)
+After=network.target
+
+[Service]
+User=ec2-user
+# Ajuste para o diretorio real onde estao app.py / requirements.txt na EC2
+WorkingDirectory=/home/ec2-user/postech-flag-api
+Environment=APP_ENV=PROD
+# Use o caminho absoluto do gunicorn (confirme com: which gunicorn).
+# Se instalou via pip --user, costuma ser /home/ec2-user/.local/bin/gunicorn
+ExecStart=gunicorn --bind 0.0.0.0:5000 app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -6,10 +6,11 @@ services:
     volumes:
       - .:/app
     environment:
+      - APP_ENV=local
       - DB_HOST=db
-      - DB_NAME=togglemaster
-      - DB_USER=user
-      - DB_PASSWORD=password
+      - DB_NAME=flagapi
+      - DB_USER=flagapi_user
+      - DB_PASSWORD=dev@321#
       - DB_PORT=5432
     depends_on:
       db:
@@ -17,13 +18,15 @@ services:
   db:
     image: postgres:13
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=togglemaster
+      - POSTGRES_USER=flagapi_user
+      - POSTGRES_PASSWORD=dev@321#
+      - POSTGRES_DB=flagapi
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d togglemaster"]
+      test: ["CMD-SHELL", "pg_isready -U flagapi_user -d flagapi"]
       interval: 10s
       timeout: 5s
       retries: 5
