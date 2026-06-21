@@ -9,6 +9,8 @@ WorkingDirectory=/home/ec2-user/postech-flag-api
 Environment=APP_ENV=PROD
 # Garante as dependencias atualizadas a cada (re)start (idempotente).
 ExecStartPre=/home/ec2-user/postech-flag-api/venv/bin/pip install -r requirements.txt
+# Garante a tabela 'flags' no banco a cada (re)start (CREATE TABLE IF NOT EXISTS, idempotente).
+ExecStartPre=/home/ec2-user/postech-flag-api/venv/bin/flask --app app init-db
 # Aponta direto para o gunicorn da venv (equivale a "ativar" a venv).
 ExecStart=/home/ec2-user/postech-flag-api/venv/bin/gunicorn --bind 0.0.0.0:5000 app:app
 Restart=always
