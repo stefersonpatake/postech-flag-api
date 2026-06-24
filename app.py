@@ -3,15 +3,11 @@ import os
 from flask import Flask, request, jsonify
 import psycopg2
 from psycopg2.extras import RealDictCursor
-
-from config import load_config
+from config import load_aws_config
 
 app = Flask(__name__)
 
-# Carrega a configuração UMA vez no boot:
-#   - local  -> usa o .env
-#   - na AWS (APP_ENV != local) -> busca o Secrets Manager e sobrescreve
-load_config()
+load_aws_config()
 
 DB_HOST = os.getenv("DB_HOST")
 DB_USER = os.getenv("DB_USER")

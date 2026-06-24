@@ -1,21 +1,19 @@
 import json
 import os
 
-from dotenv import load_dotenv
 import boto3
 from botocore.exceptions import ClientError
 
 SECRET_NAME = "postgres-flagapi"
 REGION_NAME = "us-east-1"
 
-# Mapeia chaves do segredo da AWS -> nomes de variáveis usadas pela app.
+""" Mapeia chaves do segredo da AWS -> nomes de variáveis usadas pela app. """
 SECRET_KEY_MAP = {
     "host": "DB_HOST",
     "username": "DB_USER",
     "password": "DB_PASSWORD",
     "port": "DB_PORT",
 }
-
 
 def _load_secret_into_env():
     """Busca o segredo no Secrets Manager e injeta os valores em os.environ."""
@@ -42,15 +40,9 @@ def _load_secret_into_env():
         os.environ["DB_NAME"] = str(db_name)
 
 
-def load_config():
-    """
-    Popula o ambiente a partir de UMA fonte:
-      - sempre carrega o .env primeiro (defaults / dev local);
-      - se APP_ENV != 'local', busca o Secrets Manager e sobrescreve.
-    Depois disso o resto do código usa só os.getenv(...).
-    """
-    # override=False: variáveis que já existem no ambiente real têm prioridade.
-    load_dotenv(override=False)
+def load_aws_config():
 
-    if os.getenv("APP_ENV", "local").lower() != "local":
+    """ Se APP_ENV != 'local' e !DB_USER, busca no Secrets Manager e sobrescreve os.getenv(...). """
+    """ Isso garante que irá executar apenas 1 vez no boot, e não a cada request. """
+    if os.getenv("APP_ENV", "local").lower() != "local" and os.getenv("DB_USER") is None:
         _load_secret_into_env()
