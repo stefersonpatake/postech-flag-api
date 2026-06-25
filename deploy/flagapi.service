@@ -4,8 +4,9 @@ After=network.target
 
 [Service]
 User=ec2-user
-# Ajuste para o diretorio real onde estao app.py / requirements.txt na EC2
+# Diretorio real onde estao app.py / requirements.txt na EC2
 WorkingDirectory=/home/ec2-user/postech-flag-api
+# Setando a variável APP_ENV para PROD para que o condig entenda o ambiente de Produção
 Environment=APP_ENV=PROD
 # Garante as dependencias atualizadas a cada (re)start (idempotente).
 ExecStartPre=/home/ec2-user/postech-flag-api/venv/bin/pip install -r requirements.txt
