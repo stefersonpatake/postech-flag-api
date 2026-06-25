@@ -16,6 +16,8 @@ SECRET_KEY_MAP = {
 }
 
 def _load_secret_into_env():
+    print("Buscando segredo no Secrets Manager...")
+
     """Busca o segredo no Secrets Manager e injeta os valores em os.environ."""
     client = boto3.session.Session().client(
         service_name="secretsmanager",
@@ -41,8 +43,10 @@ def _load_secret_into_env():
 
 
 def load_aws_config():
-
-    """ Se APP_ENV != 'local' e !DB_USER, busca no Secrets Manager e sobrescreve os.getenv(...). """
+    print("APP_ENV:", os.getenv("APP_ENV", "local"))
+    print("DB_HOST:", os.getenv("DB_HOST"))
+    
+    """ Se APP_ENV != 'local' e !DB_HOST, busca no Secrets Manager e sobrescreve os.getenv(...). """
     """ Isso garante que irá executar apenas 1 vez no boot, e não a cada request. """
-    if os.getenv("APP_ENV", "local").lower() != "local" and os.getenv("DB_USER") is None:
+    if os.getenv("APP_ENV", "local").lower() != "local" and os.getenv("DB_HOST") is None:
         _load_secret_into_env()
