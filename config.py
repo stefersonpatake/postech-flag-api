@@ -1,8 +1,15 @@
 import json
 import os
+from datetime import datetime
 
 import boto3
 from botocore.exceptions import ClientError
+
+
+def log(*args):
+    """Imprime a mensagem prefixada com timestamp (YYYY-MM-DD HH:MM:SS)."""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{timestamp}] ", *args)
 
 SECRET_NAME = "postgres-flagapi"
 REGION_NAME = "us-east-1"
@@ -16,7 +23,7 @@ SECRET_KEY_MAP = {
 }
 
 def _load_secret_into_env():
-    print("Buscando segredo no Secrets Manager...")
+    log("Buscando segredo no Secrets Manager...")
 
     """Busca o segredo no Secrets Manager e injeta os valores em os.environ."""
     client = boto3.session.Session().client(
@@ -43,8 +50,8 @@ def _load_secret_into_env():
 
 
 def load_aws_config():
-    print("Ambiente:", os.getenv("APP_ENV", "local"))
-    print("Host do banco:", os.getenv("DB_HOST", "Não definido"))
+    log("Ambiente:", os.getenv("APP_ENV", "local"))
+    log("Host do banco:", os.getenv("DB_HOST", "Não definido"))
 
     """ Se APP_ENV != 'local' e !DB_HOST, busca no Secrets Manager e sobrescreve os.getenv(...). """
     """ Isso garante que irá executar apenas 1 vez no boot, e não a cada request. """

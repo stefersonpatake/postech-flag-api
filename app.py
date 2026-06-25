@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from config import load_aws_config
+from config import log
 
 app = Flask(__name__)
 
@@ -29,7 +30,7 @@ def get_db_connection():
 
 
 def init_db():
-    print("Tentando inicializar a tabela 'flags'...")
+    log("Tentando inicializar a tabela 'flags'...")
     try:
         conn = get_db_connection()
         cur = conn.cursor()
@@ -46,11 +47,11 @@ def init_db():
         conn.commit()
         cur.close()
         conn.close()
-        print("Tabela 'flags' inicializada com sucesso.")
+        log("Tabela 'flags' inicializada com sucesso.")
     except psycopg2.OperationalError as e:
-        print(f"Erro de conexão ao inicializar o banco de dados: {e}")
+        log(f"Erro de conexão ao inicializar o banco de dados: {e}")
     except Exception as e:
-        print(f"Um erro inesperado ocorreu durante a inicialização do DB: {e}")
+        log(f"Um erro inesperado ocorreu durante a inicialização do DB: {e}")
 
 
 @app.cli.command("init-db")
@@ -199,4 +200,5 @@ def delete_flag(name):
 
 
 if __name__ == "__main__":
+    log("Iniciando a aplicação...")
     app.run(host="0.0.0.0", port=5000)
