@@ -48,10 +48,13 @@ def _load_secret_into_env():
     if db_name:
         os.environ["DB_NAME"] = str(db_name)
 
+    log("Host do banco via Secrets Manager:", os.getenv("DB_HOST", "Não definido"))
+    log("Nome do banco via Secrets Manager:", os.getenv("DB_NAME", "Não definido"))
 
 def load_aws_config():
     log("Ambiente:", os.getenv("APP_ENV", "local"))
     log("Host do banco:", os.getenv("DB_HOST", "Não definido"))
+    log("Nome do banco:", os.getenv("DB_NAME", "Não definido"))
 
     """ Se APP_ENV != 'local' e !DB_HOST, busca no Secrets Manager e sobrescreve os.getenv(...). """
     """ Isso garante que irá executar apenas 1 vez no boot, e não a cada request. """

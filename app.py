@@ -30,7 +30,7 @@ def get_db_connection():
 
 
 def init_db():
-    log("Tentando inicializar a tabela 'flags'...")
+    log("Tentando conectar ao banco de dados e inicializar a tabela 'flags'...")
     try:
         conn = get_db_connection()
         cur = conn.cursor()
